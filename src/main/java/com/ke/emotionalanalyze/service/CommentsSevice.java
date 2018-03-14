@@ -162,12 +162,7 @@ public class CommentsSevice {
         return commentsDao.getCommentsByName(bookName);
     }
 
-    /**
-     *从书库获取所有书本
-     */
-    public List<BookMessage> getBookListInDb(){
-        return libraryDao.getBookList();
-    }
+
 
     /**
      *删除评论

@@ -95,21 +95,12 @@
 
 	<div class="Hui-article">
 		<article class="cl pd-20">
-
 			<form class="text-c">
-				数据源:
-				<span class="select-box radius" style="width:10%;">
-				  <select id="origin" name="origin" class="select" size="1">
-					  <option value="all" selected>全部</option>
-					  <option value="JD" >京东</option>
-					  <option value="amazon" >亚马逊</option>
-					  <option value="dangdang">当当网</option>
+				书本选择:
+				<span class="select-box radius" style="width:50%;">
+				  <select id="books" name="books" class="select" size="1" onchange="getCommentsByName(this)">
 				  </select>
 				</span>
-				书名:
-				<input type="text" id="book" name="book" class="input-text Wdate radius" style="width:40%;">
-
-				<button type="button" onclick="checkForm()" class="btn btn-success radius"><i class="Hui-iconfont">&#xe665;</i>提交</button>
 			</form>
 
 			<div class="pd-5 mt-10">
@@ -189,60 +180,32 @@ function initPage(data) {
     });
 }
 
-
-
-function checkForm () {
-    $.ajax({
-        url:"/crawlbyurl",
-        type: 'POST',
-        data:$("form").serialize(),
-        dataType:"json",
-        success:function(data,textStatus){
-            console.log("success:"+data.bookName+data.author);
-            //爬取队列
-			$("#crawlQueue").append("<tr class=\"text-c\" ><td><a onclick=\"deleteBook()\">"+data.bookName+"</a></td><td>"+data.author+"</td><td>采集中</td><td><a  onclick=\"deleteBook()\">删除</a></td></tr>");
-            layer.msg("爬取时间大概为2分钟，请稍等",{icon: 1,time:2500});
-		},
-        error : function(data) {
-            console.log("error:"+data);
-        }
-    })
-}
-
 $.ajax({
-    url:"/getcrawlqueue",
+    url:"/getbooklist",
     type: "GET",
     headers: {
         Accept: "application/json"
     },
-    success:function(data,textStatus){
-        console.log(data)
-        if(data==null)
-            return;
-        var htmlStr = "";
-        $.each(data, function(i, n){
-            htmlStr += "<tr class=\"text-c\" ><td><a onclick=\"getCommentsByName(this)\">"+n.bookName+"</a>></td><td>"+n.author+"</td>";
-            console.log(n.crawlOver);
-            if(n.crawlOver == true){
-                htmlStr += "<td>采集完成</td>";
-			}else{
-                htmlStr += "<td>采集中</td>";
-			}
-			htmlStr += "<td><a id=\'"+n.bookId+"\' onclick=\"deleteBook(this)\">删除</a></td></tr>"
-        });
-		$("#crawlQueue").html(htmlStr);
+    success:function(data){
+        console.log(data);
+        var selectStr = "";
+        $.each(data,function (i,n) {
+			selectStr += " <option value=\""+n.bookName+"\">"+n.bookName+"</option>"
+        })
+        $("#books").html(selectStr);
     },
     error : function(data) {
         console.log("error:"+data);
     }
-});
+})
+
 
 function getCommentsByName(obj) {
-	var bookName = obj.text;
+    var bookName = obj.value;
     $.ajax({
         url:"/getcomments/"+bookName,
         dataType:"json",
-        success:function(data,textStatus){
+        success:function(data){
             console.log(data)
             if(data==null)
                 return;
@@ -251,29 +214,6 @@ function getCommentsByName(obj) {
         error : function(data) {
             console.log("error:"+data);
         }
-    });
-
-}
-
-function deleteBook(obj) {
-    layer.confirm('确认要删除吗？',function(index){
-        var bookId = $(obj).attr("id");
-        $.ajax({
-            url:"/removebookinqueue/"+bookId,
-            dataType:"json",
-            success:function(data){
-                console.log(data)
-                if(data.bookId!=bookId){
-                    layer.msg("删除失败!",{icon: 2,time:1500});
-                    return;
-                }
-                $(obj).parents("tr").remove();
-            },
-            error : function(result) {
-                layer.msg('删除失败!',{icon:2,time:1500});
-            }
-        });
-        layer.msg('已删除!',{icon:1,time:1000});
     });
 }
 

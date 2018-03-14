@@ -3,6 +3,7 @@ package com.ke.emotionalanalyze.controller;
 import com.ke.emotionalanalyze.pojo.BookMessage;
 import com.ke.emotionalanalyze.pojo.Comments;
 import com.ke.emotionalanalyze.pojo.Result;
+import com.ke.emotionalanalyze.service.BookService;
 import com.ke.emotionalanalyze.service.CommentsSevice;
 import com.ke.emotionalanalyze.util.ProcessUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class ProcessController {
 
     @Autowired
     private CommentsSevice commentsSevice;
+    @Autowired
+    private BookService bookService;
 
     /**
      * 爬取数据页面
@@ -68,18 +71,9 @@ public class ProcessController {
     @ResponseBody
     @RequestMapping(value = "/getcomments/{bookName}")
     public List<Comments> getCommentsByBookName(@PathVariable("bookName")String bookName){
-        System.out.println(bookName);
         return commentsSevice.getCommentsByBookName(bookName);
     }
 
-    /**
-     *从书库获取所有书
-     */
-    @ResponseBody
-    @RequestMapping("/getbooklist")
-    public List<BookMessage> getBooklistInDb(){
-        return commentsSevice.getBookListInDb();
-    }
 
     /**
      *删除一条评论
@@ -95,6 +89,15 @@ public class ProcessController {
     @RequestMapping(value = "/dataclean")
     public String dataClean(){
         return "html/process/dataclean.html";
+    }
+
+    /**
+     *从书库获取所有书
+     */
+    @ResponseBody
+    @RequestMapping("/getbooklist")
+    public List<BookMessage> getBooklistInDb(){
+        return bookService.getBookListInDb();
     }
 
 }
