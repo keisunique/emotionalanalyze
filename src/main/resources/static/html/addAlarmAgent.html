@@ -1,0 +1,275 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+	<head>	
+		<meta charset="utf-8">
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="ui/lib/html5.js"></script>
+		<script type="text/javascript" src="ui/lib/respond.min.js"></script>
+		<![endif]-->
+		<link rel="stylesheet" type="text/css" href="/flowvisualization/ui/static/h-ui/css/H-ui.min.css" />
+		<link rel="stylesheet" type="text/css" href="/flowvisualization/ui/static/h-ui.admin/css/H-ui.admin.css" />
+		<link rel="stylesheet" type="text/css" href="/flowvisualization/ui/lib/Hui-iconfont/1.0.8/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="/flowvisualization/ui/static/h-ui.admin/skin/default/skin.css" id="skin" />
+		<link rel="stylesheet" type="text/css" href="/flowvisualization/ui/static/h-ui.admin/css/style.css" />
+		<link rel="stylesheet" type="text/css" href="/flowvisualization/js/jquery-ui.css" />
+		<!--[if IE 6]>
+		<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+		<script>DD_belatedPNG.fix('*');</script><![endif]-->
+		<!--/meta 作为公共模版分离出去-->
+		
+		<title>添加告警计划</title>
+		
+	</head>
+<body>
+
+<article class="cl pd-20">
+	<form action="setalarm" method="post" class="form form-horizontal" id="form-member-add">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">计划名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input id="alarm_definition.alarm_name" name="alarm_definition.alarm_name" type="text" class="input-text" value="" placeholder="长度:1-32个字符"  >
+			</div>
+		</div>
+		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">节点IP：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span class="select-box" >
+				  <select id="agentip" name="agentip" class="select" size="1">
+				    <option value="" selected>请选择节点IP</option>
+				  </select>
+				</span> 
+			</div>
+			
+		</div>
+		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">状态设置：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+				<select name="status" class="select" size="1" >
+					<option value="启动">启动</option>
+					<option value="暂停">暂停</option>
+				</select>
+				</span> </div>
+		</div>
+		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">告警描述：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input id="alarm_definition.alarm_describe" name="alarm_definition.alarm_describe" type="text" class="input-text" value="" placeholder="最大50个字符" >
+			</div>
+		</div>
+		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">告警分类：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input id="alarm_definition.alarm_classfiy" name="alarm_definition.alarm_classfiy" type="text" class="input-text" value="" placeholder="长度:1-10个字符" id="mobile" >
+			</div>
+		</div>
+		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">告警等级：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+				<select name="alarm_definition.alarm_level" class="select" size="1" >
+					<option value="低">低</option>
+					<option value="中">中</option>
+					<option value="高">高</option>
+				</select>
+				</span> </div>
+		</div>
+		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">告警类型：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input name="alarm_definition.alarm_type" type="text" class="input-text" value="" placeholder="长度:1-10个字符" id="mobile" >
+			</div>
+		</div>
+		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">开始时间：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input readonly type="text" id="start_time" name="alarm_condition.begin_time" class="input-text" >
+			</div>
+		</div>
+		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">结束时间：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input readonly id="end_time" name="alarm_condition.end_time" type="text" class="input-text">
+			</div>
+		</div>
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">比较操作：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+				<select name="alarm_condition.compare" class="select" size="1" >
+					<option value="大于">大于</option>
+					<option value="小于">小于</option>
+				</select>
+				</span> </div>
+		</div>
+		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">参数阈值：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input name="alarm_condition.value" type="text" class="input-text" placeholder="大于零的正整数" >
+			</div>
+		</div>
+		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">参数单位：</label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+				<select name="alarm_condition.threshold" class="select" size="1" >
+					<option value="b/s">(字节每秒)b/s</option>
+					<option value="k/s">(千字节每秒)k/s</option>
+					<option value="m/s">(兆字节每秒)m/s</option>
+					<option value="package/s">(数据包每秒)package/s</option>
+				</select>
+				</span> </div>
+		</div>
+		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">时间桶：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input name="alarm_condition.timebucket" type="text" class="input-text" placeholder="单位为秒"  >
+			</div>
+		</div>
+		
+		
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3">接收者邮箱：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input name="email" type="text" class="input-text" placeholder="多个邮箱用/分开" >
+			</div>
+		</div>
+		
+	
+		
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+			</div>
+		</div>
+		
+	</form>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="/flowvisualization/ui/lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="/flowvisualization/ui/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="/flowvisualization/ui/static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="/flowvisualization/ui/static/h-ui.admin/js/H-ui.admin.page.js"></script>
+<script type="text/javascript" src="/flowvisualization/js/jquery-ui.js"></script> 
+<script type="text/javascript" src="/flowvisualization/js/laydate/laydate.js"></script>
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="/flowvisualization/ui/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="/flowvisualization/ui/lib/jquery.validation/1.14.0/jquery.validate.js"></script> 
+<script type="text/javascript" src="/flowvisualization/ui/lib/jquery.validation/1.14.0/validate-methods.js"></script> 
+<script type="text/javascript" src="/flowvisualization/ui/lib/jquery.validation/1.14.0/messages_zh.js"></script> 
+<script type="text/javascript">
+laydate.render({
+	  elem: '#start_time'
+	  ,type: 'datetime'
+	});
+laydate.render({
+	  elem: '#end_time'
+	  ,type: 'datetime'
+	});
+
+$(function(){
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	 $.validator.addMethod("checkTimeBucket",function(value,element,params){  
+         var reg = /^\+?[1-9][0-9]*$/;  
+         return this.optional(element)||(reg.test(value));  
+     },"请输入正整数！"); 
+	
+	
+	$("#form-member-add").validate({
+		rules:{
+			"alarm_definition.alarm_name":{
+				required:true,
+				rangelength:[1,32],
+			},
+			agentip:{
+				required:true,
+			},
+			"alarm_definition.alarm_type":{
+				rangelength:[1,10],
+				required:true,
+			},
+			"alarm_definition.alarm_classfiy":{
+				rangelength:[1,10],
+				required:true,
+			},
+			"alarm_definition.alarm_describe":{
+				maxlength:50
+			},
+			"alarm_condition.timebucket":{
+				checkTimeBucket:true,
+				required:true,
+			},
+			"alarm_condition.value":{
+				checkTimeBucket:true,
+				required:true,
+			},
+			"alarm_condition.begin_time":{
+				required:true,
+			},
+			"alarm_condition.end_time":{
+				required:true,
+			},
+			"email":{
+				required:true,
+			}
+		
+		},
+		//提交表单后，（第一个）未通过验证的表单获得焦点  
+        focusInvalid:true,  
+        //当未通过验证的元素获得焦点时，移除错误提示  
+        focusCleanup:true, 
+		onkeyup:false,
+		success:"valid",
+		submitHandler:function(form){
+			$(form).ajaxSubmit({
+				success: function(data){
+					if(data.result=="ok"){
+						var index = parent.layer.getFrameIndex(window.name);
+						window.parent.location.reload();
+						parent.layer.close(index);  
+					}else{
+						layer.msg(data.result,{icon: 2,time:1500});
+					}
+				}
+			});		
+			 
+		}
+	});
+});
+
+$.ajax({
+	url:"/flowvisualization/system/getagentlist",
+	success:function(result){
+		var str = "<option style=\"display:none\" value=\"\" selected>请选择节点IP</option>";
+		result = result.sort();
+		for(var i=0;i<result.length;i++){
+			str += "<option value="+result[i]+">"+result[i]+"</option>"
+		}
+		$('#agentip').html(str);		
+	},
+
+});
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

@@ -1,0 +1,1017 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="renderer" content="webkit|ie-comp|ie-stand">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<!--[if lt IE 9]>
+		<script type="text/javascript" src="ui/lib/html5.js"></script>
+		<script type="text/javascript" src="ui/lib/respond.min.js"></script>
+		<![endif]-->
+		<link rel="stylesheet" type="text/css" href="/ui/static/h-ui/css/H-ui.min.css" />
+		<link rel="stylesheet" type="text/css" href="/ui/static/h-ui.admin/css/H-ui.admin.css" />
+		<link rel="stylesheet" type="text/css" href="/flowvisualization/ui/lib/Hui-iconfont/1.0.8/iconfont.css" />
+		<link rel="stylesheet" type="text/css" href="/flowvisualization/ui/static/h-ui.admin/skin/default/skin.css" id="skin" />
+		<link rel="stylesheet" type="text/css" href="/flowvisualization/ui/static/h-ui.admin/css/style.css" />	
+		<link rel="stylesheet" type="text/css" href="/flowvisualization/js/jquery-ui.css" />	
+		<!--[if IE 6]>
+		<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+		<script>DD_belatedPNG.fix('*');</script>
+		<![endif]-->
+		<!--/meta 作为公共模版分离出去-->
+		<script type="text/javascript" src="/flowvisualization/js/laydate/laydate.js"></script>    
+		<title>节点分析</title>
+		
+		 <style>
+		  .ui-progressbar {
+		    position: relative;
+		  }
+		  .progress-label {
+		    position: absolute;
+		    left: 50%;
+		    top: 4px;
+		    font-weight: bold;
+		    text-shadow: 1px 1px 0 #fff;
+		  }
+		  </style>
+		
+	</head>
+<body>
+
+<!--_header 作为公共模版分离出去-->
+<header class="navbar-wrapper">
+<div class="navbar navbar-fixed-top">
+		<div class="container-fluid cl"> <a class="logo navbar-logo f-l mr-10 hidden-xs" href="/flowvisualization/home">VCMY 流量可视化</a> <a class="logo navbar-logo-m f-l mr-10 visible-xs" href="/aboutHui.shtml">H-ui</a> 
+			<span class="logo navbar-slogan f-l mr-10 hidden-xs">v1.3</span> 
+			<a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
+			<nav style="display:none" class="nav navbar-nav">
+				<ul class="cl">
+					<li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe600;</i> 新增 <i class="Hui-iconfont">&#xe6d5;</i></a>
+						<ul class="dropDown-menu menu radius box-shadow">
+							<li><a href="javascript:;" onclick="article_add('添加资讯','article-add.html')"><i class="Hui-iconfont">&#xe616;</i> 节点告警</a></li>
+							<li><a href="javascript:;" onclick="picture_add('添加资讯','picture-add.html')"><i class="Hui-iconfont">&#xe613;</i> 端口告警</a></li>
+							<li><a href="javascript:;" onclick="product_add('添加资讯','product-add.html')"><i class="Hui-iconfont">&#xe620;</i> 计划报表</a></li>
+							<li><a href="javascript:;" onclick="member_add('添加用户','member-add.html','','510')"><i class="Hui-iconfont">&#xe60d;</i> 用户</a></li>
+				</ul>
+			</li>
+		</ul>
+	</nav>
+	<nav id="Hui-userbar" style="display:none" class="nav navbar-nav navbar-userbar hidden-xs">
+				<ul class="cl">
+					<li>超级管理员</li>
+					<li class="dropDown dropDown_hover"> <a href="#" class="dropDown_A">admin <i class="Hui-iconfont">&#xe6d5;</i></a>
+						<ul class="dropDown-menu menu radius box-shadow">
+							<li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
+							<li><a href="#">切换账户</a></li>
+							<li><a href="#">退出</a></li>
+				</ul>
+			</li>
+					<li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger"></span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
+					<li id="Hui-skin" class="dropDown right dropDown_hover"> <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
+						<ul class="dropDown-menu menu radius box-shadow">
+							<li><a href="javascript:;" data-val="default" title="默认（蓝色）">默认（蓝色）</a></li>
+							<li><a href="javascript:;" data-val="black" title="黑色">黑色</a></li>
+							<li><a href="javascript:;" data-val="green" title="绿色">绿色</a></li>
+							<li><a href="javascript:;" data-val="red" title="红色">红色</a></li>
+							<li><a href="javascript:;" data-val="yellow" title="黄色">黄色</a></li>
+							<li><a href="javascript:;" data-val="orange" title="橙色">橙色</a></li>
+				</ul>
+			</li>
+		</ul>
+	</nav>
+</div>
+</div>
+</header>
+<!--/_header 作为公共模版分离出去-->
+
+<!--_menu 作为公共模版分离出去-->
+<aside class="Hui-aside">
+	
+	<div class="menu_dropdown bk_2">
+	
+		<dl id="flow-analysis">
+			<dt><i class="Hui-iconfont">&#xe616;</i> 流量分析<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd style="display: block;">
+				<ul>
+					<li><a href="/flowvisualization/analysis/flow" title="节点分析">节点分析</a></li>
+					<li><a href="/flowvisualization/analysis/flowinter" title="端口分析">端口分析</a></li>
+					<li><a href="/flowvisualization/analysis/topip" title="TOP节点">TOP节点</a></li>
+				</ul>
+			</dd>
+		</dl>
+	
+	
+		<dl id="menu-article">
+			<dt><i class="Hui-iconfont">&#xe616;</i> 流量监控<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a href="/flowvisualization/agentFlow" title="节点监控">节点监控</a></li>
+					<li><a href="/flowvisualization/InterfacesFlow" title="端口监控">端口监控</a></li>
+					<li><a href="/flowvisualization/TopFlow1" title="Top flow">Top流</a></li>
+					<li><a href="/flowvisualization/FlowTrace1" title="流跟踪">流跟踪</a></li>
+				</ul>
+			</dd>
+		</dl>
+		
+		<dl id="menu-picture">
+			<dt><i class="Hui-iconfont">&#xe613;</i> 告警设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a href="/flowvisualization/agentAlarm" title="节点告警">节点告警</a></li>
+					<li><a href="/flowvisualization/portAlarm" title="端口告警">端口告警</a></li>
+					<li><a href="/flowvisualization/alarmlog" title="告警日志">告警日志</a></li>
+				</ul>
+			</dd>
+		</dl>
+		
+		<dl id="menu-product">
+			<dt><i class="Hui-iconfont">&#xe620;</i> 报表设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a href="/flowvisualization/reportformstimely" title="即时报表">即时报表</a></li>
+					<li><a href="/flowvisualization/reportformsplan" title="计划报表">计划报表</a></li>	
+					<li><a href="/flowvisualization/reportformsmsg" title="报表信息">报表信息</a></li>
+				</ul>
+			</dd>
+		</dl>
+		
+	
+		
+		<dl id="menu-system">
+			<dt><i class="Hui-iconfont">&#xe62e;</i> 系统管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a href="/flowvisualization/system/" title="系统设置">系统信息</a></li>
+					<li><a href="/flowvisualization/system/agentlist" title="节点列表">节点列表</a></li>
+				</ul>
+			</dd>
+		</dl>
+		
+	</div>
+	
+</aside>
+<div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
+<!--/_menu 作为公共模版分离出去-->
+
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> <a href="/flowvisualization/home">首页</a><span class="c-gray en">&gt;</span>流量分析 <span class="c-gray en">&gt;</span> 节点分析<a id="refresh" class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="Hui-article">
+	
+		<article class="cl pd-20">	
+			<form class="text-c">
+				节点IP: 
+				<span class="select-box radius" style="width:18%;">
+				  <select id="agentIp" name="agentIp" class="select" size="1">
+				    <option value="" selected>请选择节点IP</option>
+				  </select>
+				</span> 
+				日期范围:
+				<input readonly type="text" id="starttime" name="startTime" class="input-text Wdate radius" style="width:22%;">
+				-
+				<input readonly type="text" id="endtime" name="endTime" class="input-text Wdate radius" style="width:22%;">
+				<button type="button" onclick="checkForm()" class="btn btn-success radius"><i class="Hui-iconfont">&#xe665;</i> OK</button>		
+			</form>
+		
+		<div style="height:380px;min-height:100px;margin:0 auto" id="main" ></div>
+		
+	
+		<table class="table table-border table-bordered table-hover table-bg">
+			<thead>
+				<tr class="text-c">
+					<th width="80">总数据包数</th>
+					<th width="80">进网包数</th>
+					<th width="80">出网包数</th>
+					<th width="80">总字节数</th>
+					<th width="80">进网字节数</th>
+					<th width="80">出网字节数</th>
+				</tr>
+			</thead>	
+			<tbody id="tb_static">				
+				<tr class="text-c" >	
+					<td>0</td>
+					<td>0</td>	
+					<td>0</td>	
+					<td>0</td>	
+					<td>0</td>	
+					<td>0</td>				
+				</tr>						
+			</tbody>
+		</table>
+		
+		<table class="table table-border table-bordered table-hover table-bg">
+			<thead>
+				<tr class="text-c">
+					<th width="80">峰值总数据包数</th>
+					<th width="80">峰值进网数据包数</th>
+					<th width="80">峰值出网数据包数</th>
+					<th width="80">峰值总流量</th>
+					<th width="80">峰值进网流量</th>
+					<th width="80">峰值出网流量</th>
+				</tr>
+			</thead>	
+			<tbody id="tb_top">				
+				<tr class="text-c" >	
+					<td>0</td>
+					<td>0</td>	
+					<td>0</td>	
+					<td>0</td>	
+					<td>0</td>	
+					<td>0</td>				
+				</tr>						
+			</tbody>
+		</table>
+		
+		
+		
+		<div style="margin-left: 0px;padding-left: 0px">
+			<div style="float:left;margin-left: 0px;padding-left: 0px;padding-right:0px" class="col-lg-7 col-md-7 col-sm-7">
+				<table class="table table-border table-bordered table-hover table-bg" style="margin-left: 0px;padding-left: 0px;padding-right:0px">
+					<thead>
+						<tr class="text-c">
+							<th width="80">数据包类型</th>
+							<th width="80">数据包</th>
+							<th width="80">占总数据包百分比</th>				
+						</tr>
+					</thead>	
+					<tbody id="tb_type">				
+						<tr class="text-c" >	
+							<td>广播包进网</td>
+							<td>0</td>	
+							<td><div id="progressbar_bi"><div class="progress-label">0%</div></div></td>							
+						</tr>
+						<tr class="text-c" >	
+							<td>广播包出网</td>
+							<td>0</td>	
+							<td><div id="progressbar_bo"><div class="progress-label">0%</div></div></td>							
+						</tr>
+						<tr class="text-c" >	
+							<td>单播包进网</td>
+							<td>0</td>	
+							<td><div id="progressbar_ui"><div class="progress-label">0%</div></div></td>							
+						</tr>	
+						<tr class="text-c" >	
+							<td>单播包出网</td>
+							<td>0</td>	
+							<td><div id="progressbar_uo"><div class="progress-label">0%</div></div></td>							
+						</tr>	
+						<tr class="text-c" >	
+							<td>组播包进网</td>
+							<td>0</td>	
+							<td><div id="progressbar_mi"><div class="progress-label">0%</div></div></td>							
+						</tr>	
+						<tr class="text-c" >	
+							<td>组播包出网</td>
+							<td>0</td>	
+							<td><div id="progressbar_mo"><div class="progress-label">0%</div></div></td>							
+						</tr>								
+					</tbody>
+				</table>
+				
+			</div>
+			
+			<div style="float:left;margin-left: 0px;padding-left: 0px;padding-right:0px" class="col-lg-5 col-md-5 col-sm-5">
+				<table class="table table-border table-bordered table-hover table-bg" style="margin-left: 0px;padding-left: 0px;padding-right:0px">
+					<thead>
+						<tr class="text-c">
+							<th width="80">诊断类型</th>
+							<th width="80">诊断值</th>					
+						</tr>
+					</thead>	
+					<tbody id="tb_diagnose">				
+						<tr class="text-c" >	
+							<td>进网丢包率</td>
+							<td><div id="progressbar_id"><div class="progress-label">0%</div></div></td>							
+						</tr>
+						<tr class="text-c" >	
+							<td>进网错误率</td>
+							<td><div id="progressbar_ie"><div class="progress-label">0%</div></div></td>								
+						</tr>					
+						<tr class="text-c" >	
+							<td>进网利用率</td>
+							<td><div id="progressbar_iu"><div class="progress-label">0%</div></div></td>							
+						</tr>
+						<tr class="text-c" >	
+							<td>出网丢包率</td>
+							<td><div id="progressbar_od"><div class="progress-label">0%</div></div></td>								
+						</tr>
+						<tr class="text-c" >	
+							<td>出网错误率</td>
+							<td><div id="progressbar_oe"><div class="progress-label">0%</div></div></td>							
+						</tr>
+						<tr class="text-c" >	
+							<td>出网利用率</td>
+							<td><div id="progressbar_ou"><div class="progress-label">0%</div></div></td>								
+						</tr>						
+					</tbody>
+				</table>
+		
+			</div>
+			
+		
+		</div>
+	
+		<!-- 端口标识	总数据流量	出网数据流量	进网数据流量	总数据包	出网数据包	进网数据包 -->
+		<table class="table table-border table-bordered table-hover table-bg ">
+			<thead>
+				<tr class="text-c">
+					<th width="80">端口标识</th>
+					<th width="80">总数据流量</th>
+					<th width="80">进网数据流量</th>
+					<th width="80">出网数据流量</th>
+					<th width="80">总数据包</th>
+					<th width="80">进网数据包</th>
+					<th width="80">出网数据包</th>
+				</tr>
+			</thead>	
+			<tbody id="tb_port">				
+				<tr class="text-c" >	
+					<td>0</td>
+					<td>0</td>	
+					<td>0</td>	
+					<td>0</td>	
+					<td>0</td>	
+					<td>0</td>
+					<td>0</td>					
+				</tr>						
+			</tbody>
+		</table>
+
+	
+			
+		</article>
+	</div>
+</section>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="/flowvisualization/ui/lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="/flowvisualization/ui/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="/flowvisualization/ui/static/h-ui/js/H-ui.js"></script> 
+<script type="text/javascript" src="/flowvisualization/ui/static/h-ui.admin/js/H-ui.admin.page.js"></script> 
+<script type="text/javascript" src="/flowvisualization/js/jquery-ui.js"></script> 
+<script type="text/javascript" src="/flowvisualization/js/echarts.js"></script> 
+<script type="text/javascript" src="/flowvisualization/js/util/unitChangeUtils.js"></script> 
+<!--/_footer /作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+
+
+</script>
+<script type="text/javascript">
+
+laydate.render({
+	  elem: '#starttime'
+	  ,type: 'datetime'
+	});
+laydate.render({
+	  elem: '#endtime'
+	  ,type: 'datetime'
+	});
+$(function() {
+	<!--广播-->
+   	$( "#progressbar_bi" ).progressbar({
+      value: 0,
+    });
+   	$( "#progressbar_bo" ).progressbar({
+        value: 0,
+      });
+   	$( "#progressbar_ui" ).progressbar({
+        value: 0,
+      });
+   	$( "#progressbar_uo" ).progressbar({
+        value: 0,
+      });
+   	$( "#progressbar_mi" ).progressbar({
+        value: 0,
+      });
+   	$( "#progressbar_mo" ).progressbar({
+        value: 0,
+      });
+   	<!--诊断-->
+   	$( "#progressbar_iu" ).progressbar({
+        value: 0,
+      });
+   	$( "#progressbar_ie" ).progressbar({
+        value: 0,
+      });
+   	$( "#progressbar_id" ).progressbar({
+        value: 0,
+      });
+   	$( "#progressbar_oe" ).progressbar({
+        value: 0,
+      });
+   	$( "#progressbar_od" ).progressbar({
+        value: 0,
+      });
+   	$( "#progressbar_ou" ).progressbar({
+        value: 0,
+      });
+  });
+var myChart = echarts.init(document.getElementById('main'));
+option = {
+	title: {
+            text: '流量趋势',
+            x:"center",
+            y:"top"
+        },
+    tooltip: {  
+         show: true,  
+         trigger: 'axis'  
+     },
+    toolbox: {
+    	right:100,
+    	show: true,
+        //各工具配置项，除了各个内置的工具按钮外，还可以自定义工具按钮（自定义的工具名字，只能以 my 开头）
+        feature: {
+            //数据视图工具，可以展现当前图表所用的数据
+            dataView: {
+                //是否只读，修改数据可改变图表
+                readOnly: true
+            },     
+            //配置项还原
+            restore: {},
+            //保存为图片
+            saveAsImage: {}
+        }
+    },
+    xAxis: {
+        type: 'category',
+        name: '时间 (单位:s)',
+        boundaryGap: false,
+    },
+    yAxis: {
+        boundaryGap: [0, '50%'],
+        type: 'value',
+        name: '流量 (单位:byte/s)',
+    },
+    dataZoom : [
+     	{  
+	    	 type: 'slider',
+	         show : true,  
+	         realtime : true,  
+	         start : 0,  
+	         end : 100,
+	         xAxisIndex: [0],
+    	},
+    	{  
+	    	 type: 'inside',  
+	         realtime : true,  
+	         xAxisIndex: [0]
+    	},
+     	
+    ],
+    series: [
+        {
+            name:'流量',
+            type:'line',
+            hoverAnimation: false,
+            lineStyle: {
+                normal: {
+                    width: 1
+                }
+            },
+            itemStyle: {
+                normal: {
+                    opacity: 0,
+                    color: '#3333ff',
+                }
+            },
+            
+          	//区域填充颜色
+            areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgba(199, 237, 250,0.5)'
+                    }, {
+                        offset: 1,
+                        color: 'rgba(199, 237, 250,0.2)'
+                    }], false)
+                }
+            },
+        }
+    ]
+}; 
+myChart.setOption(option, true);
+
+//天级数据
+var dData;
+//小时级数据
+var hData;
+//分钟级别
+var mData;
+//秒级
+var sData;
+//时间范围
+var timeRange;
+//当前IP
+var currentIp;
+//当前显示的级别数据
+var currentLevel;
+//当前单位
+var currentDivisor;
+//数据级别
+var level;
+
+myChart.on('datazoom', function (params){
+	//获取开始结束范围数组下标
+	var startValue = myChart.getModel().option.dataZoom[0].startValue;
+	var endValue = myChart.getModel().option.dataZoom[0].endValue;
+	var startPercent = myChart.getModel().option.dataZoom[0].start;
+	var endPercent = myChart.getModel().option.dataZoom[0].end;
+	//拿到起止时间
+	var startX = myChart.getModel().option.xAxis[0].data[startValue];
+	var endX = myChart.getModel().option.xAxis[0].data[endValue];
+	//计算时间范围
+	var beginTime = new Date(startX).getTime();
+	var endTime = new Date(endX).getTime();
+	timeRange = endTime-beginTime;
+
+	//如果时间范围大于1个星期，显示天级数据
+	if(timeRange >= 17280000000 && currentLevel != "day"){	
+		console.log("当前显示天级数据");
+		//天级
+		var date = [];
+		var data = [];
+		for(var i=0; i<dData.length-2; i++) {
+		    date.push(dData[i].timestamp);
+		    var t = parseFloat(dData[i].totalFlows)/currentDivisor;
+			data.push(t.toFixed(2));
+		}
+		myChart.setOption({
+		     xAxis: {
+		            data: date,
+		      },
+		     dataZoom : [
+		      	{  
+		 	         start : startPercent,  
+		 	         end : endPercent,
+		     	},	 
+		     ],
+		     series: { 	    
+		          data: data, 	      
+		     },	 	       
+		}); 
+		//改变等级
+		currentLevel = "day";
+	}else if(timeRange >= 36000000 && timeRange < 17280000000 && currentLevel != "hour"){
+		//小时级
+		if(hData==null){
+			layer.msg('小时级数据加载中，请稍等...',{icon: 1,time:1500});
+			return;
+		}
+		console.log("当前显示小时级数据");
+		var date = [];
+		var data = [];
+		for(var i=0; i<hData.length-2; i++) {
+		    date.push(hData[i].timestamp);
+		    var t = parseFloat(hData[i].totalFlows)/currentDivisor;
+			data.push(t.toFixed(2));
+		}
+		myChart.setOption({
+		     xAxis: {
+		            data: date,
+		      },
+		     dataZoom : [
+		      	{  
+		 	         start : startPercent,  
+		 	         end : endPercent,
+		     	},
+		     ],
+		     series: { 	    
+		          data: data, 	      
+		     },	 	       
+		}); 
+		//改变等级
+		currentLevel = "hour";
+	}else if(timeRange >= 600000 && timeRange < 36000000 && currentLevel != "minute"){
+		//分钟级
+		if(mData==null){
+			layer.msg('分钟级数据加载中，请稍等...',{icon: 1,time:1500});
+			return;
+		}
+		console.log("当前显示分钟级数据");
+		var date = [];
+		var data = [];
+		for(var i=0; i<mData.length-2; i++) {
+		    date.push(mData[i].timestamp);
+		    var t = parseFloat(mData[i].totalFlows)/currentDivisor;
+			data.push(t.toFixed(2));
+		}
+		myChart.setOption({
+		     xAxis: {
+		            data: date,
+		      },
+		     dataZoom : [
+		      	{  
+		 	         start : startPercent,  
+		 	         end : endPercent,
+		     	},	  
+		     ],
+		     series: { 	    
+		          data: data, 	      
+		     },	 	       
+		}); 
+		//改变等级
+		currentLevel = "minute";
+	}else if(timeRange < 600000 && currentLevel != "second"){
+		//秒级
+		if(sData==null){
+			layer.msg('秒级数据加载中，请稍等...',{icon: 1,time:1500});
+			return;
+		}
+		console.log("当前显示秒级数据");
+		var date = [];
+		var data = [];
+		for(var i=0; i<sData.length-2; i++) {
+		    date.push(sData[i].timestamp);
+		    var t = parseFloat(sData[i].totalFlows)/currentDivisor;
+			data.push(t.toFixed(2));
+		}
+		console.log("before"+startPercent+"-"+endPercent);
+/* 		var percentInterval = ((endPercent - startPercent)-1)/2;
+		console.log("percentInterval"+percentInterval);
+		startPercent += percentInterval;
+		endPercent -= percentInterval;
+		console.log("after"+startPercent+"-"+endPercent); */
+		myChart.setOption({
+		     xAxis: {
+		            data: date,
+		      },
+		     dataZoom : [
+		      	{  
+		 	         start : startPercent,  
+		 	         end : endPercent,
+		     	},	 
+		     ],
+		     series: { 	    
+		          data: data, 	      
+		     },	 	       
+		}); 
+		//改变等级
+		currentLevel = "second";
+	} 
+});
+
+function initVar(){
+	var dData = null;
+	var hData = null;
+	var mData = null;
+	var sData = null;
+	var timeRange = null;
+	var currentIp = null;
+	var currentLevel = null;
+	var currentDivisor = null;
+	var level = null;
+	myChart.setOption({
+	     dataZoom : [
+	      	{  
+	 	         start : 0,  
+	 	         end : 100,
+	     	},	 
+	     ],
+	 	       
+	}); 
+}
+
+function checkForm(){
+	//前端合法性验证	
+	var agentIp = $('#agentIp').val();
+	var starttime = $('#starttime').val();
+	var endtime = $('#endtime').val();
+	if(agentIp=="" || starttime=="" || endtime==""){
+		layer.msg('请输入完整信息',{icon: 2,time:1500});
+		return;
+	}
+	var s = new Date(starttime).getTime();
+	var e = new Date(endtime).getTime();
+	if(s>=e){
+		layer.msg('结束时间不得早于或等于开始时间',{icon: 2,time:1500});
+		return;
+	}
+	initVar();
+	currentIp = agentIp;
+	//计算时间确认等级
+	var r = e-s;
+	var date=[];
+	var data=[];
+	myChart.showLoading();
+	$.ajax({
+		url:"/flowvisualization/getAnalysis",
+		data:$("form").serialize(),
+		dataType:"json",
+		success:function(result){
+			if(result.length<=2){
+				layer.msg('没有数据',{icon: 5,time:1500});
+				myChart.hideLoading();
+				return;
+			}
+			showTable(result[result.length-2]);
+			currentLevel = result[result.length-1].level;
+			var avgValue = (result[result.length-2].trafficStatistics.totalnocets/(result.length-2))/1024;
+			var divisor = 1;
+			var unit = "流量 (单位:Byte/s)";
+			var unit_1 = "B";
+			if( 1024 > avgValue && avgValue > 10){
+				divisor = 1024;
+				unit = "流量 (单位:KB/s)";
+				unit_1 = "KB";
+				
+			}else if(avgValue >= 1024){
+				divisor = 1048576;
+				unit = "流量 (单位:MB/s)";
+				unit_1 = "MB";
+			}
+			currentDivisor = divisor;
+			for(var i=0; i<result.length-2; i++) {
+			    date.push(result[i].timestamp);
+			    var t = parseFloat(result[i].totalFlows)/divisor;
+				data.push(t.toFixed(2));
+			}
+			myChart.hideLoading();
+			myChart.setOption({
+	 	      xAxis: {
+	 	            data: date,
+	 	       },
+	 	      yAxis: {			   
+			        name: unit,
+			        /* axisLabel: {
+	 	            	formatter: '{value}'+unit_1,
+	 	            } */
+			    },
+	 	      series: { 	    
+	 	          data: data, 	      
+	 	      },	 	       
+	 		});
+			if(result.length > 250 && currentLevel=="second"){
+			myChart.setOption({
+				dataZoom : {   	          
+		 	          start : 0,  
+		 	          end : (250/result.length)*100,
+		 	     	},
+				})		
+			} 
+			switch(currentLevel){
+				case "day"　: dData = result; getHourLevelData(starttime,endtime);break;
+				case "hour" : hData = result; getMinuteLevelData(starttime,endtime);break;
+				case "minute" : mData = result; getSecondLevelDate(starttime,endtime);break;				
+			}
+		},
+		error:function(){
+			layer.msg('错误'+data.result,{icon: 5,time:1500});
+			myChart.hideLoading();
+		}
+	});
+
+}
+
+//获取秒级数据
+function getSecondLevelDate(startTime,endTime){
+	$.ajax({
+		url:"/flowvisualization/getAnalysis",
+		data:{"agentIp":currentIp,"startTime":startTime,"endTime":endTime,"level":"second"},
+		dataType:"json",
+		success:function(result){
+			sData = result;
+			console.log("秒级数据获取成功");
+		},
+		error:function(){
+			console.log("秒级数据获取出错");
+		}
+	})
+}
+
+//获取分钟级别数据
+function getMinuteLevelData(startTime,endTime){
+	$.ajax({
+		url:"/flowvisualization/getAnalysis",
+		data:{"agentIp":currentIp,"startTime":startTime,"endTime":endTime,"level":"minute"},
+		dataType:"json",
+		success:function(result){
+			mData = result;
+			console.log("分钟级别数据获取成功");
+		},
+		error:function(){
+			console.log("分钟级别数据获取出错");
+		}
+	
+	})
+	getSecondLevelDate(startTime,endTime);
+}
+
+//获取小时级别数据
+function getHourLevelData(startTime,endTime){
+	$.ajax({
+		url:"/flowvisualization/getAnalysis",
+		data:{"agentIp":currentIp,"startTime":startTime,"endTime":endTime,"level":"hour"},
+		dataType:"json",
+		success:function(result){
+			hData = result;
+			console.log("小时级别数据获取成功");
+		},
+		error:function(){
+			console.log("小时级别数据获取出错");
+		}
+	
+	})
+	getMinuteLevelData(startTime,endTime);
+}
+
+	
+	function broadcast(data){
+		
+		<!--广播包进网占比-->
+		var bi = data.dataPacketType.inbroadcastPktsBit;
+		bi = bi.replace("%","");
+		bi = parseInt(bi);
+		$( "#progressbar_bi" ).progressbar({
+		      value: bi,
+		});
+		
+		<!--广播包出网占比-->
+		var bo = data.dataPacketType.outbroadcastPktsBit;
+		bo = bo.replace("%","");
+		bo = parseInt(bo);
+		$( "#progressbar_bo" ).progressbar({
+		      value: bo,
+		});
+		
+		<!--单播包进网-->
+		var ui = data.dataPacketType.inucastPktsBit;
+		ui = ui.replace("%","");
+		ui = parseInt(ui);
+		$( "#progressbar_ui" ).progressbar({
+		      value: ui,
+		});
+		
+		<!--单播包出网-->
+		var uo = data.dataPacketType.outucastPktsBit;
+		uo = uo.replace("%","");
+		uo = parseInt(uo);
+		$( "#progressbar_uo" ).progressbar({
+		      value: uo,
+		});
+		
+		<!--组播包进网占比-->
+		var mi = data.dataPacketType.inmulticastPktsBit;
+		mi = mi.replace("%","");
+		mi = parseInt(mi);
+		$( "#progressbar_mi" ).progressbar({
+		      value: mi,
+		});
+		
+		<!--组播包出网占比-->
+		var mo = data.dataPacketType.outmulticastPktsBit;
+		mo = mo.replace("%","");
+		mo = parseInt(mo);
+		$( "#progressbar_mo" ).progressbar({
+		      value: mo,
+		});	
+	}
+
+	$.ajax({
+		url:"/flowvisualization/system/getagentlist",
+		success:function(result){
+			var str = "<option style=\"display:none\" value=\"\" selected>请选择节点IP</option>";
+			result = result.sort();
+			for(var i=0;i<result.length;i++){
+				str += "<option value="+result[i]+">"+result[i]+"</option>"
+			}
+			$('#agentIp').html(str);		
+		},
+
+	});
+
+	function diagnose(data){
+		
+		var iu = data.trafficDiagnose.inutilization;
+		iu = iu.replace("%","");
+		iu = parseInt(iu);
+		$( "#progressbar_iu" ).progressbar({
+	        value: iu,
+	      });
+		
+		var ie = data.trafficDiagnose.inerrors;
+		ie = ie.replace("%","");
+		ie = parseInt(ie);
+	   	$( "#progressbar_ie" ).progressbar({
+	        value: ie,
+	      });
+	   	
+	   	var id = data.trafficDiagnose.indiscards;
+		id = id.replace("%","");
+		id = parseInt(id);
+	   	$( "#progressbar_id" ).progressbar({
+	        value: id,
+	      });
+	   	
+	   	var oe = data.trafficDiagnose.outerrors;
+		oe = oe.replace("%","");
+		oe = parseInt(oe);
+	   	$( "#progressbar_oe" ).progressbar({
+	        value: oe,
+	      });
+	   	
+	   	var od = data.trafficDiagnose.outdiscards;
+		od = od.replace("%","");
+		od = parseInt(od);
+	   	$( "#progressbar_od" ).progressbar({
+	        value: od,
+	      });
+	   	
+	   	var ou = data.trafficDiagnose.oututilization;
+		ou = ou.replace("%","");
+		ou = parseInt(ou);
+	   	$( "#progressbar_ou" ).progressbar({
+	        value: ou,
+	      });
+	}
+
+	function tbPort(){
+		$.ajax({
+			url:"/flowvisualization/getIpInterfaceDatas",
+			data:$("form").serialize(),
+			dataType:"json",
+			success:function(data){
+				
+				 for (var i = 0; i < data.length; i++) {
+					console.log(data[2].outpkts);
+					if(i == 0 ){
+						$("#tb_port").html("<tr class=\"text-c\" >"
+								 +"<td>"+  data[i].port +"</td>"
+								 +"<td>"+  changeUnit(data[i].totalnocets) +"</td>"
+								 +"<td>"+  changeUnit(data[i].innocets) +"</td>"
+								 +"<td>"+  changeUnit(data[i].outnocets) +"</td>"
+								 +"<td>"+  changeUnit(data[i].totalpkts) +"</td>"
+								 +"<td>"+  changeUnit(data[i].inpkts) +"</td>"
+								 +"<td>"+  changeUnit(data[i].outpkts) +"</td></tr>"
+						
+						);
+					}
+					else{
+						$("#tb_port").append("<tr class=\"text-c\" >"
+								 +"<td>"+  data[i].port +"</td>"
+								 +"<td>"+  changeUnit(data[i].totalnocets) +"</td>"
+								 +"<td>"+  changeUnit(data[i].innocets) +"</td>"
+								 +"<td>"+  changeUnit(data[i].outnocets) +"</td>"
+								 +"<td>"+  changeUnit(data[i].totalpkts) +"</td>"
+								 +"<td>"+  changeUnit(data[i].inpkts) +"</td>"
+								 +"<td>"+  changeUnit(data[i].outpkts) +"</td></tr>"		
+						
+						);
+					}
+				}
+			}
+		});
+	}
+	function showTable(data) {
+				//console.log(data[data.length-1].dataPacketType);
+				$("#tb_static").html("<tr class=\"text-c\" ><td>"+  changeUnit(data.trafficStatistics.totalpkts) +"</td>"
+						 +"<td>"+  changeUnit(data.trafficStatistics.inpkts) +"</td>"
+						 +"<td>"+  changeUnit(data.trafficStatistics.outpkts) +"</td>"
+						 +"<td>"+  changeUnit(data.trafficStatistics.totalnocets) +"</td>"
+						 +"<td>"+  changeUnit(data.trafficStatistics.innoctes) +"</td>"
+						 +"<td>"+  changeUnit(data.trafficStatistics.outnoctes) +"</td></tr>"					
+					);
+				$("#tb_top").html("<tr class=\"text-c\" ><td>"+  changeUnit(parseInt(data.trafficStatistics.maxtotalpkts)) +"</td>"
+						 +"<td>"+  changeUnit(data.trafficStatistics.maxinpkts) +"</td>"
+						 +"<td>"+  changeUnit(data.trafficStatistics.maxoutpkts) +"</td>"
+						 +"<td>"+  changeUnit(data.trafficStatistics.maxtotalnocets) +"</td>"
+						 +"<td>"+  changeUnit(data.trafficStatistics.maxinnocts) +"</td>"
+						 +"<td>"+  changeUnit(data.trafficStatistics.maxoutnoctes) +"</td></tr>"					
+			);
+				$("#tb_type").html("<tr class=\"text-c\" ><td>广播包进网</td><td>"+ changeUnit(data.dataPacketType.inbroadcastPkts) +"</td><td><div id=\"progressbar_bi\"><div class=\"progress-label\">"+data.dataPacketType.inbroadcastPktsBit+"</div></div></td>"
+								+"<tr class=\"text-c\" ><td>广播包出网</td><td>"+ changeUnit(data.dataPacketType.outbroadcastPkts) +"</td><td><div id=\"progressbar_bo\"><div class=\"progress-label\">"+data.dataPacketType.outbroadcastPktsBit+"</div></div></td>"
+								+"<tr class=\"text-c\" ><td>单播包进网</td><td>"+ changeUnit(data.dataPacketType.inucastPkts) +"</td><td><div id=\"progressbar_ui\"><div class=\"progress-label\">"+data.dataPacketType.inucastPktsBit+"</div></div></td>"
+								+"<tr class=\"text-c\" ><td>单播包出网</td><td>"+ changeUnit(data.dataPacketType.outucastPkts) +"</td><td><div id=\"progressbar_uo\"><div class=\"progress-label\">"+data.dataPacketType.outucastPktsBit+"</div></div></td>"
+								+"<tr class=\"text-c\" ><td>组播包进网</td><td>"+ changeUnit(data.dataPacketType.inmulticastPkts) +"</td><td><div id=\"progressbar_mi\"><div class=\"progress-label\">"+data.dataPacketType.inmulticastPktsBit+"</div></div></td>"
+								+"<tr class=\"text-c\" ><td>组播包出网</td><td>"+ changeUnit(data.dataPacketType.outmulticastPkts) +"</td><td><div id=\"progressbar_mo\"><div class=\"progress-label\">"+data.dataPacketType.outmulticastPktsBit+"</div></div></td>"		
+					);
+				
+				broadcast(data);
+				
+				
+				$("#tb_diagnose").html("<tr class=\"text-c\" ><td>进网丢包率</td><td><div id=\"progressbar_id\"><div class=\"progress-label\">"+data.trafficDiagnose.indiscards+"</div></div></td></tr>"
+								 +"<tr class=\"text-c\" ><td>进网错误率</td><td><div id=\"progressbar_ie\"><div class=\"progress-label\">"+data.trafficDiagnose.inerrors+"</div></div></td></tr>"
+								 +"<tr class=\"text-c\" ><td>进网利用率</td><td><div id=\"progressbar_iu\"><div class=\"progress-label\">"+data.trafficDiagnose.inutilization+"</div></div></td></tr>"
+								 +"<tr class=\"text-c\" ><td>出网丢包率</td><td><div id=\"progressbar_od\"><div class=\"progress-label\">"+data.trafficDiagnose.outdiscards+"</div></div></td></tr>"
+								 +"<tr class=\"text-c\" ><td>出网错误率</td><td><div id=\"progressbar_oe\"><div class=\"progress-label\">"+data.trafficDiagnose.outerrors+"</div></div></td></tr>"
+								 +"<tr class=\"text-c\" ><td>出网利用率</td><td><div id=\"progressbar_ou\"><div class=\"progress-label\">"+data.trafficDiagnose.oututilization+"</div></div></td></tr>"
+							);
+				
+				diagnose(data);
+				tbPort();
+			
+	}
+	
+</script>
+
+<!--/请在上方写此页面业务相关的脚本-->
+
+</body>
+
+
+</html>
