@@ -100,4 +100,24 @@ public class ProcessController {
         return bookService.getBookListInDb();
     }
 
+    /**
+     * 去重
+     */
+    @ResponseBody
+    @RequestMapping("/deleterepeat/{bookName}")
+    public Result deleteRepeatComments(@PathVariable("bookName")String bookName){
+       return new Result(commentsSevice.deleteRepeatComments(bookName).toString());
+    }
+
+
+    //分词---------------------------------------
+
+    /**
+     * 分词页
+     */
+    @RequestMapping("/decomposition")
+    public String decomposition(){
+        return "html/process/decomposition.html";
+    }
+
 }
