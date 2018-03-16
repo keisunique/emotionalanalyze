@@ -50,7 +50,8 @@
 				<ul>
 					<li><a href="/crawl" >爬取数据</a></li>
 					<li><a href="#" >数据清洗</a></li>
-					<li><a href="article-list.html" >分词及词性标注</a></li>
+					<li><a href="/decomposition" >分词及词性标注</a></li>
+					<li><a href="/stopword" >去停用词</a></li>
 					<li><a href="article-list.html" >冗余词表替换</a></li>
 				</ul>
 			</dd>
@@ -99,25 +100,19 @@
 				书本选择:
 				<span class="select-box radius" style="width:50%;">
 				  <select id="books" name="books" class="select" size="1" onchange="getCommentsByName(this)">
+					   <option value="null">请选择一本书</option>
 				  </select>
 				</span>
 			</form>
 
-			<div class="pd-5 mt-10">
-				<table class="table table-border table-bordered table-hover table-bg">
-					<thead>
-						<tr class="text-c">
-							<th width="100">书名</th>
-							<th width="20">作者</th>
-							<th width="20">状态</th>
-							<th width="20">操作</th>
-						</tr>
-					</thead>
-					<tbody id="crawlQueue">
-
-					</tbody>
-				</table>
+			<div class="cl pd-5 bg-1 bk-gray mt-20">
+				<span class="l">
+					<a href="javascript:;" onclick="deleteRepeatComments()" class="btn btn-primary radius">清洗重复评论</a>&nbsp;
+					<!--<a href="javascript:;" onclick="datadel()" class="btn btn-primary radius">自定义过滤</a>-->
+				</span>
 			</div>
+
+			<div class="mt-20">
 
 			<div class="pd-5 mt-10">
 				<table class="table table-border table-bordered table-hover table-bg">
@@ -192,7 +187,7 @@ $.ajax({
         $.each(data,function (i,n) {
 			selectStr += " <option value=\""+n.bookName+"\">"+n.bookName+"</option>"
         })
-        $("#books").html(selectStr);
+        $("#books").append(selectStr);
     },
     error : function(data) {
         console.log("error:"+data);
@@ -202,6 +197,9 @@ $.ajax({
 
 function getCommentsByName(obj) {
     var bookName = obj.value;
+    if(bookName=="null"){
+        return;
+	}
     $.ajax({
         url:"/getcomments/"+bookName,
         dataType:"json",
@@ -237,8 +235,6 @@ function deleteComment(obj) {
         });
         layer.msg('已删除!',{icon:1,time:1000});
     });
-
-
 }
 
 function commentItem(data) {
@@ -252,6 +248,23 @@ function commentItem(data) {
     });
     $("#comments").html(htmlStr);
 }
+
+function deleteRepeatComments() {
+    var bookName = $("#books").val();
+    $.ajax({
+        url:"/deleterepeat/"+bookName,
+        dataType:"json",
+        success:function(data){
+            console.log("删除重复结果："+data);
+			layer.msg("已删除，共有"+data.result+"条重复数据",{icon: 1,time:1500});
+        },
+        error : function(result) {
+            layer.msg('删除失败!',{icon:2,time:1500});
+        }
+    });
+}
+
+
 </script>
 <!--/请在上方写此页面业务相关的脚本-->
 

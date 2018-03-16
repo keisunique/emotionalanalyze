@@ -25,7 +25,7 @@
 <![endif]-->
 <!--/meta 作为公共模版分离出去-->
 
-<title>数据处理--爬取数据</title>
+<title>数据处理--去停用词</title>
 
 </head>
 <body>
@@ -48,9 +48,9 @@
 			<dt><i class="Hui-iconfont">&#xe616;</i> 数据处理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 			<dd style="display: block">
 				<ul>
-					<li><a href="#" >爬取数据</a></li>
+					<li><a href="/crawl" >爬取数据</a></li>
 					<li><a href="/dataclean" >数据清洗</a></li>
-					<li><a href="/decomposition" >分词及词性标注</a></li>
+					<li><a href="#" >分词及词性标注</a></li>
 					<li><a href="/stopword" >去停用词</a></li>
 					<li><a href="article-list.html" >冗余词表替换</a></li>
 				</ul>
@@ -90,42 +90,29 @@
 		<span class="c-999 en">&gt;</span>
 		<span class="c-666">数据处理</span>
 		<span class="c-999 en">&gt;</span>
-		<span class="c-666">爬取数据</span>
+		<span class="c-666">去停用词</span>
 		<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
 	</nav>
 
 	<div class="Hui-article">
 		<article class="cl pd-20">
 			<form class="text-c">
-<!--				<span class="select-box radius" style="width:10%;">
-				  <select id="origin" name="origin" class="select" size="1">
-					  <option value="all" selected>全部</option>
-					  <option value="JD" >京东</option>
-					  <option value="amazon" >亚马逊</option>
-					  <option value="dangdang">当当网</option>
+				书本选择:
+				<span class="select-box radius" style="width:50%;">
+				  <select id="books" name="books" class="select" size="1" onchange="getCommentsByName(this)">
+					   <option value="null">请选择一本书</option>
 				  </select>
-				</span>-->
-				地址:
-				<input type="text" id="book" name="book" class="input-text Wdate radius" style="width:50%;">
-
-				<button type="button" onclick="checkForm()"  class="btn btn-success radius"><i class="Hui-iconfont">&#xe665;</i>确定</button>
+				</span>
 			</form>
 
-			<div class="pd-5 mt-10">
-				<table class="table table-border table-bordered table-hover table-bg">
-					<thead>
-						<tr class="text-c">
-							<th width="100">书名</th>
-							<th width="20">作者</th>
-							<th width="20">状态</th>
-							<th width="20">操作</th>
-						</tr>
-					</thead>
-					<tbody id="crawlQueue">
-
-					</tbody>
-				</table>
+			<div class="cl pd-5 bg-1 bk-gray mt-20">
+				<span class="l">
+					<a href="javascript:;" onclick="mark()" class="btn btn-primary radius">分词和词性标注</a>&nbsp;
+					<!--<a href="javascript:;" onclick="datadel()" class="btn btn-primary radius">自定义过滤</a>-->
+				</span>
 			</div>
+
+			<div class="mt-20">
 
 			<div class="pd-5 mt-10">
 				<table class="table table-border table-bordered table-hover table-bg">
@@ -188,60 +175,35 @@ function initPage(data) {
     });
 }
 
-
-
-function checkForm () {
-    $.ajax({
-        url:"/crawlbyurl",
-        type: 'POST',
-        data:$("form").serialize(),
-        dataType:"json",
-        success:function(data,textStatus){
-            console.log("success:"+data.bookName+data.author);
-            //爬取队列
-			$("#crawlQueue").append("<tr class=\"text-c\" ><td><a onclick=\"getCommentsByName(this)\">"+data.bookName+"</a></td><td>"+data.author+"</td><td>采集中</td><td><a  onclick=\"deleteBook()\">删除</a></td></tr>");
-            layer.msg("爬取时间大概为2分钟，请稍等",{icon: 1,time:2500});
-		},
-        error : function(data) {
-            console.log("error:"+data);
-        }
-    })
-}
-
 $.ajax({
-    url:"/getcrawlqueue",
+    url:"/getbooklist",
     type: "GET",
     headers: {
         Accept: "application/json"
     },
-    success:function(data,textStatus){
-        console.log(data)
-        if(data==null)
-            return;
-        var htmlStr = "";
-        $.each(data, function(i, n){
-            htmlStr += "<tr class=\"text-c\" ><td><a onclick=\"getCommentsByName(this)\">"+n.bookName+"</a>></td><td>"+n.author+"</td>";
-            console.log(n.crawlOver);
-            if(n.crawlOver == true){
-                htmlStr += "<td>采集完成</td>";
-			}else{
-                htmlStr += "<td>采集中</td>";
-			}
-			htmlStr += "<td><a id=\'"+n.bookId+"\' onclick=\"deleteBook(this)\">删除</a></td></tr>"
-        });
-		$("#crawlQueue").html(htmlStr);
+    success:function(data){
+        console.log(data);
+        var selectStr = "";
+        $.each(data,function (i,n) {
+			selectStr += " <option value=\""+n.bookName+"\">"+n.bookName+"</option>"
+        })
+        $("#books").append(selectStr);
     },
     error : function(data) {
         console.log("error:"+data);
     }
-});
+})
+
 
 function getCommentsByName(obj) {
-	var bookName = obj.text;
+    var bookName = obj.value;
+    if(bookName=="null"){
+        return;
+	}
     $.ajax({
         url:"/getcomments/"+bookName,
         dataType:"json",
-        success:function(data,textStatus){
+        success:function(data){
             console.log(data)
             if(data==null)
                 return;
@@ -250,29 +212,6 @@ function getCommentsByName(obj) {
         error : function(data) {
             console.log("error:"+data);
         }
-    });
-
-}
-
-function deleteBook(obj) {
-    layer.confirm('确认要删除吗？',function(index){
-        var bookId = $(obj).attr("id");
-        $.ajax({
-            url:"/removebookinqueue/"+bookId,
-            dataType:"json",
-            success:function(data){
-                console.log(data)
-                if(data.bookId!=bookId){
-                    layer.msg("删除失败!",{icon: 2,time:1500});
-                    return;
-                }
-                $(obj).parents("tr").remove();
-            },
-            error : function(result) {
-                layer.msg('删除失败!',{icon:2,time:1500});
-            }
-        });
-        layer.msg('已删除!',{icon:1,time:1000});
     });
 }
 
@@ -296,8 +235,6 @@ function deleteComment(obj) {
         });
         layer.msg('已删除!',{icon:1,time:1000});
     });
-
-
 }
 
 function commentItem(data) {
@@ -311,6 +248,27 @@ function commentItem(data) {
     });
     $("#comments").html(htmlStr);
 }
+
+function mark() {
+    var bookName = $("#books").val();
+    $.ajax({
+        url:"/mark/"+bookName,
+        dataType:"json",
+        success:function(data){
+            console.log("分词结果："+data);
+            if(data==null){
+                layer.msg("无数据",{icon: 1,time:1500});
+                return;
+			}
+            initPage(data);
+        },
+        error : function(result) {
+            layer.msg('失败!',{icon:2,time:1500});
+        }
+    });
+}
+
+
 </script>
 <!--/请在上方写此页面业务相关的脚本-->
 

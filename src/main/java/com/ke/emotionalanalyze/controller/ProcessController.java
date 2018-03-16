@@ -120,4 +120,13 @@ public class ProcessController {
         return "html/process/decomposition.html";
     }
 
+    /**
+     * 分词和词性标注
+     */
+    @ResponseBody
+    @RequestMapping("/mark/{bookName}")
+    public List<Comments> mark(@PathVariable("bookName")String bookName){
+        return commentsSevice.mark(bookName);
+    }
+
 }

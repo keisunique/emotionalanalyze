@@ -11,6 +11,8 @@ import com.ke.emotionalanalyze.util.HttpUtils;
 import com.ke.emotionalanalyze.util.ProcessUtils;
 import com.mongodb.client.result.DeleteResult;
 import com.sun.org.apache.regexp.internal.RE;
+import org.ansj.domain.Term;
+import org.ansj.splitWord.analysis.ToAnalysis;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -28,6 +30,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -175,5 +178,51 @@ public class CommentsSevice {
             return new Result("删除评论失败！");
         }
     }
+
+    /**
+     * 删除重复评论
+     */
+    public Integer deleteRepeatComments(String bookName){
+        //获取该书评论
+        System.out.println("清洗书名"+bookName);
+        List<Comments> comments = getCommentsByBookName(bookName);
+        HashMap<Integer,Comments> commentMap = new HashMap<>();
+        List<String> ids = new ArrayList<>();
+        //将评论内容进行哈希计算
+        for (Comments c:comments) {
+            String content = c.getContent();
+            //如果map里有相同的hashcode则进行字符串对比，相同则放如待删除列表
+            if(commentMap.containsKey(content.hashCode())){
+                if(c.getContent().equals(commentMap.get(content.hashCode()).getContent())){
+                    ids.add(c.getId());
+                }
+            }else{
+                commentMap.put(content.hashCode(),c);
+            }
+        }
+        //删除
+        System.out.println("重复数据"+ids.size());
+        for (String id:ids) {
+            commentsDao.deleteComment(id);
+        }
+        //返回删除条数
+        return ids.size();
+    }
+
+
+    /**
+     * 分词和词性标注
+     */
+    public List<Comments> mark(String bookName){
+        //获取书本所有评论
+        List<Comments> comments = commentsDao.getCommentsByName(bookName);
+        //分词
+        for (Comments c:comments) {
+            org.ansj.domain.Result result = ToAnalysis.parse(c.getContent());
+            c.setContent(result.getTerms().toString());
+        }
+        return comments;
+    }
+
 
 }

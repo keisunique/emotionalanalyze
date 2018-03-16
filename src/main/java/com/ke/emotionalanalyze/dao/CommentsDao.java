@@ -35,10 +35,11 @@ public class CommentsDao {
     }
 
     /**
-     *删除一条评论
+     * 根据评论id删除一条评论
      */
     public DeleteResult deleteComment(String id){
         Query query = new Query(Criteria.where("_id").is(id));
         return template.remove(query,Comments.class);
     }
+
 }
