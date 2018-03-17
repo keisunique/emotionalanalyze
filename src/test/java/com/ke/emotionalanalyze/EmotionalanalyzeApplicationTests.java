@@ -1,6 +1,8 @@
 package com.ke.emotionalanalyze;
 
 import com.ke.emotionalanalyze.dao.CommentsDao;
+import com.ke.emotionalanalyze.pojo.Comments;
+import com.ke.emotionalanalyze.service.CommentsSevice;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -20,17 +23,12 @@ public class EmotionalanalyzeApplicationTests {
 
 	@Autowired
 	private CommentsDao commentsDao;
+    @Autowired
+    private CommentsSevice commentsSevice;
 
 	@Test
 	public void contextLoads() throws Exception{
-        Resource resource = new ClassPathResource("static/txt/StopWordTable.txt");
-        BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()));
-        String line = "";
-        line = br.readLine();
-        while (line != null) {
-            line = br.readLine();
-            System.out.println(line);
-        }
+        List<Comments> comments =  commentsSevice.getCommentsByBookName("橘子不是唯一的水果");
     }
 
 }
