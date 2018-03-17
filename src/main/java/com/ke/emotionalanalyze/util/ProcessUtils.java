@@ -3,6 +3,7 @@ package com.ke.emotionalanalyze.util;
 import com.ke.emotionalanalyze.pojo.BookMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ProcessUtils {
@@ -11,6 +12,20 @@ public class ProcessUtils {
      * 采集队列
      */
     public static List<BookMessage> crawlQueue = new ArrayList<>();
+
+    public static HashMap<String,String> redundantTable = new HashMap<String,String>(){
+        {
+            put("书籍","书");put("东西","书");put("图书","书");put("宝贝","书");
+            put("书本","书");
+            put("快递","物流");
+            put("京东","服务");
+        }
+
+    };
+
+
+
+
 
     /**
      *修改书本采集状态

@@ -24,13 +24,18 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -220,6 +225,114 @@ public class CommentsSevice {
         for (Comments c:comments) {
             org.ansj.domain.Result result = ToAnalysis.parse(c.getContent());
             c.setContent(result.getTerms().toString());
+        }
+        return comments;
+    }
+
+    /**
+     * 去停用词
+     */
+    public List<Comments> stopWork(String bookName){
+        //获取书本所有评论
+        List<Comments> comments = commentsDao.getCommentsByName(bookName);
+        //获取停用词表ai
+        List<String> stopWordTable = new ArrayList<>();
+        try{
+            Resource resource = new ClassPathResource("static/txt/StopWordTable.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+            String line = "";
+            line = br.readLine();
+            while (line != null) {
+                stopWordTable.add(line);
+                line = br.readLine();
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+            System.out.println("停用词表读取失败");
+        }
+        //分词
+        for (Comments c:comments) {
+            org.ansj.domain.Result result = ToAnalysis.parse(c.getContent());
+            List<Term> terms = result.getTerms();
+            //遍历停用词表进行对比
+            for(int i=0;i<terms.size();i++){
+                for (int j=0;j<stopWordTable.size();j++){
+                    if(terms.get(i).getName().equals(stopWordTable.get(j))){
+                        System.out.println("停用词："+terms.get(i).getName());
+                        terms.remove(i);
+                        break;
+                    }
+                }
+            }
+            c.setContent(terms.toString());
+        }
+        return comments;
+    }
+
+    /**
+     * 去停用词
+     */
+    public List<Comments> Character(String bookName){
+        //获取书本所有评论
+        List<Comments> comments = commentsDao.getCommentsByName(bookName);
+        //获取停用词表ai
+        List<String> stopWordTable = new ArrayList<>();
+        try{
+            Resource resource = new ClassPathResource("static/txt/StopWordTable.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+            String line = "";
+            line = br.readLine();
+            while (line != null) {
+                stopWordTable.add(line);
+                line = br.readLine();
+            }
+            br.close();
+        }catch (IOException e){
+            e.printStackTrace();
+            System.out.println("停用词表读取失败");
+        }
+        HashSet<String> elu = new HashSet<String>(){
+            {
+                add("/n");
+            }
+        };
+        //分词
+        for (Comments c:comments) {
+            org.ansj.domain.Result result = ToAnalysis.parse(c.getContent());
+            List<Term> terms = result.getTerms();
+            //遍历停用词表进行对比
+            for(int i=0;i<terms.size();i++){
+                for (int j=0;j<stopWordTable.size();j++){
+                    if(terms.get(i).getName().equals(stopWordTable.get(j))){
+                        terms.remove(i);
+                        i--;
+                        break;
+                    }
+                }
+            }
+            for(int k=0;k<terms.size();k++){
+                if(!terms.get(k).getNatureStr().equals("n")){
+                    terms.remove(k);
+                    k--;
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            for(int k=0;k<terms.size();k++){
+                sb.append(terms.get(k).getName()+" ");
+            }
+            if(sb==null || sb.toString().equals("")){
+                c.setContent("");
+            }else{
+                c.setContent(sb.substring(0,sb.length()-1));
+            }
+
+        }
+        for(int i=0;i<comments.size();i++){
+            String content = comments.get(i).getContent();
+            if(content.equals("") || content==null){
+                comments.remove(i);
+                i--;
+            }
         }
         return comments;
     }

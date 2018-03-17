@@ -129,4 +129,23 @@ public class ProcessController {
         return commentsSevice.mark(bookName);
     }
 
+    //去停用词-------------------------------------------------------
+
+    /**
+     * 停用词页
+     */
+    @RequestMapping("/stopword")
+    public String stopWork(){
+        return "html/process/stopword.html";
+    }
+
+    /**
+     * 去停用词
+     */
+    @ResponseBody
+    @RequestMapping("/stopword/{bookName}")
+    public List<Comments> stopWordTable(@PathVariable("bookName")String bookName){
+        return commentsSevice.stopWork(bookName);
+    }
+
 }

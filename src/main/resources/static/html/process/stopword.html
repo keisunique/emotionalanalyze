@@ -50,8 +50,8 @@
 				<ul>
 					<li><a href="/crawl" >爬取数据</a></li>
 					<li><a href="/dataclean" >数据清洗</a></li>
-					<li><a href="#" >分词及词性标注</a></li>
-					<li><a href="/stopword" >去停用词</a></li>
+					<li><a href="/decomposition" >分词及词性标注</a></li>
+					<li><a href="#" >去停用词</a></li>
 					<li><a href="article-list.html" >冗余词表替换</a></li>
 				</ul>
 			</dd>
@@ -107,7 +107,7 @@
 
 			<div class="cl pd-5 bg-1 bk-gray mt-20">
 				<span class="l">
-					<a href="javascript:;" onclick="mark()" class="btn btn-primary radius">分词和词性标注</a>&nbsp;
+					<a href="javascript:;" onclick="stopWord()" class="btn btn-primary radius">分词和词性标注</a>&nbsp;
 					<!--<a href="javascript:;" onclick="datadel()" class="btn btn-primary radius">自定义过滤</a>-->
 				</span>
 			</div>
@@ -249,13 +249,13 @@ function commentItem(data) {
     $("#comments").html(htmlStr);
 }
 
-function mark() {
+function stopWord() {
     var bookName = $("#books").val();
     $.ajax({
-        url:"/mark/"+bookName,
+        url:"/stopword/"+bookName,
         dataType:"json",
         success:function(data){
-            console.log("分词结果："+data);
+            console.log("去停用词结果："+data);
             if(data==null){
                 layer.msg("无数据",{icon: 1,time:1500});
                 return;
