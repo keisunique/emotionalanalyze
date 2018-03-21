@@ -1,6 +1,7 @@
 package com.ke.emotionalanalyze.dao;
 
 import com.ke.emotionalanalyze.pojo.BookMessage;
+import com.mongodb.client.result.DeleteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -35,6 +36,22 @@ public class LibraryDao {
      */
     public List<BookMessage> getBookList(){
         return mongoTemplate.findAll(BookMessage.class);
+    }
+
+    /**
+     * 在书库表删除一本书
+     */
+    public DeleteResult deleteBook(String id){
+        Query query = new Query(Criteria.where("_id").is(id));
+        return mongoTemplate.remove(query,BookMessage.class);
+    }
+
+    /**
+     * 根据id获得书名
+     */
+    public String getBookNameById(String id){
+        Query query = new Query(Criteria.where("_id").is(id));
+        return mongoTemplate.findOne(query,BookMessage.class).getBookName();
     }
 
 

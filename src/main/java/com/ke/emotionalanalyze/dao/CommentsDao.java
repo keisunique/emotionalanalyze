@@ -42,4 +42,15 @@ public class CommentsDao {
         return template.remove(query,Comments.class);
     }
 
+    /**
+     * 删除一个书的所欲评论
+     */
+    public DeleteResult deleteComments(String bookName){
+        System.out.println("dao:"+bookName);
+        Query query = new Query(Criteria.where("bookName").is(bookName));
+        DeleteResult deleteResult= template.remove(query,Comments.class);
+        System.out.println("dao:"+deleteResult.getDeletedCount());
+        return deleteResult;
+    }
+
 }

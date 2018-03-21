@@ -291,17 +291,18 @@ public class CommentsSevice {
             e.printStackTrace();
             System.out.println("停用词表读取失败");
         }
-        HashSet<String> elu = new HashSet<String>(){
-            {
-                add("/n");
-            }
-        };
+
         //分词
         for (Comments c:comments) {
             org.ansj.domain.Result result = ToAnalysis.parse(c.getContent());
             List<Term> terms = result.getTerms();
             //遍历停用词表进行对比
             for(int i=0;i<terms.size();i++){
+                if(terms.get(i).getName().equals(" ")){
+                    terms.remove(i);
+                    i--;
+                    continue;
+                }
                 for (int j=0;j<stopWordTable.size();j++){
                     if(terms.get(i).getName().equals(stopWordTable.get(j))){
                         terms.remove(i);
@@ -311,7 +312,8 @@ public class CommentsSevice {
                 }
             }
             for(int k=0;k<terms.size();k++){
-                if(!terms.get(k).getNatureStr().equals("n")){
+                String natureStr = terms.get(k).getNatureStr();
+                if(!(natureStr.equals("n") || natureStr.equals("a"))){
                     terms.remove(k);
                     k--;
                 }
