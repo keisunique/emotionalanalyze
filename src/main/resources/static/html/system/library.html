@@ -25,7 +25,7 @@
 <![endif]-->
 <!--/meta 作为公共模版分离出去-->
 
-<title>数据处理--数据清洗</title>
+<title>系统管理--书库管理</title>
 
 </head>
 <body>
@@ -49,7 +49,7 @@
 			<dd style="display: block">
 				<ul>
 					<li><a href="/crawl" >爬取数据</a></li>
-					<li><a href="#" >数据清洗</a></li>
+					<li><a href="/dataclean" >数据清洗</a></li>
 					<li><a href="/decomposition" >分词及词性标注</a></li>
 					<li><a href="/stopword" >去停用词</a></li>
 					<li><a href="article-list.html" >冗余词表替换</a></li>
@@ -70,7 +70,7 @@
 			<dt><i class="Hui-iconfont">&#xe620;</i> 系统管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 			<dd>
 				<ul>
-					<li><a href="/library" title="书库管理">书库管理</a></li>
+					<li><a href="#" title="书库管理">书库管理</a></li>
 					<li><a href="product-category.html" title="系统信息">系统设置</a></li>
 				</ul>
 			</dd>
@@ -88,29 +88,26 @@
 
 	<nav class="breadcrumb"><i class="Hui-iconfont"></i> <a href="/" class="maincolor">首页</a> 
 		<span class="c-999 en">&gt;</span>
-		<span class="c-666">数据处理</span>
+		<span class="c-666">系统管理</span>
 		<span class="c-999 en">&gt;</span>
-		<span class="c-666">爬取数据</span>
+		<span class="c-666">书库</span>
 		<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
 	</nav>
 
 	<div class="Hui-article">
 		<article class="cl pd-20">
 			<form class="text-c">
-				书本选择:
-				<span class="select-box radius" style="width:50%;">
-				  <select id="books" name="books" class="select" size="1" onchange="getCommentsByName(this)">
-					   <option value="null">请选择一本书</option>
-				  </select>
-				</span>
+				书名：
+				<input type="text" id="book" name="book" class="input-text Wdate radius" style="width:50%;">
+				<button type="button" onclick="checkForm()"  class="btn btn-success radius"><i class="Hui-iconfont">&#xe665;</i>搜索</button>
 			</form>
 
-			<div class="cl pd-5 bg-1 bk-gray mt-20">
+<!--			<div class="cl pd-5 bg-1 bk-gray mt-20">
 				<span class="l">
-					<a href="javascript:;" onclick="deleteRepeatComments()" class="btn btn-primary radius">清洗重复评论</a>&nbsp;
-					<!--<a href="javascript:;" onclick="datadel()" class="btn btn-primary radius">自定义过滤</a>-->
+					<a href="javascript:;" onclick="stopWord()" class="btn btn-primary radius">分词和词性标注</a>&nbsp;
+					&lt;!&ndash;<a href="javascript:;" onclick="datadel()" class="btn btn-primary radius">自定义过滤</a>&ndash;&gt;
 				</span>
-			</div>
+			</div>-->
 
 			<div class="mt-20">
 
@@ -118,13 +115,12 @@
 				<table class="table table-border table-bordered table-hover table-bg">
 					<thead>
 						<tr class="text-c">
-							<th style="width: 70%">评论内容</th>
-							<th style="width: 5%">星级</th>
-							<th style="width: 15%">时间</th>
+							<th style="width: 70%">书名</th>
+							<th style="width: 20%">作者</th>
 							<th style="width: 10%">操作</th>
 						</tr>
 					</thead>
-					<tbody id="comments">
+					<tbody id="bookTable">
 						<tr class="text-c" >
 
 						</tr>
@@ -132,8 +128,8 @@
 				</table>
 				<div id="page" class="text-r"></div>
 			</div>
-
 			</div>
+
 		</article>
 
 		<footer class="footer">
@@ -169,7 +165,7 @@ function initPage(data) {
             //触发换页操作
             jump: function(obj){
                 thisData = data.concat().splice(obj.curr*obj.limit - obj.limit, obj.limit);
-                commentItem(thisData);
+                bookItem(thisData);
             }
         });
     });
@@ -183,43 +179,28 @@ $.ajax({
     },
     success:function(data){
         console.log(data);
-        var selectStr = "";
-        $.each(data,function (i,n) {
-			selectStr += " <option value=\""+n.bookName+"\">"+n.bookName+"</option>"
-        })
-        $("#books").append(selectStr);
+        initPage(data);
     },
     error : function(data) {
         console.log("error:"+data);
     }
 })
 
-
-function getCommentsByName(obj) {
-    var bookName = obj.value;
-    if(bookName=="null"){
-        return;
-	}
-    $.ajax({
-        url:"/getcomments/"+bookName,
-        dataType:"json",
-        success:function(data){
-            console.log(data)
-            if(data==null)
-                return;
-            initPage(data);
-        },
-        error : function(data) {
-            console.log("error:"+data);
-        }
+function bookItem(data) {
+    var bookStr = "";
+	$.each(data,function (i,n) {
+		bookStr += "<tr class=\"text-c\" ><td>" +
+				n.bookName + "</td><td>" +
+				n.author + "</td><td><a id=\'"+n.id+"\' onclick=\"deleteBook(this)\">删除</a></td></tr>"
     });
+	$("#bookTable").html(bookStr);
 }
 
-function deleteComment(obj) {
+function deleteBook(obj) {
     layer.confirm('确认要删除吗？',function(index){
         var id = $(obj).attr("id");
         $.ajax({
-            url:"/deletecomment/"+id,
+            url:"/deletebook/"+id,
             dataType:"json",
             success:function(data){
                 console.log(data);
@@ -237,32 +218,6 @@ function deleteComment(obj) {
     });
 }
 
-function commentItem(data) {
-    var htmlStr = "";
-    $.each(data, function(i, n){
-        htmlStr += "<tr class=\"text-c\" ><td>"
-            +n.content+"</td><td>"
-            +n.stat+"</td><td>"
-            +n.time+"</td>";
-        htmlStr += "<td><a id=\'"+n.id+"\' onclick=\"deleteComment(this)\">删除</a></td></tr>"
-    });
-    $("#comments").html(htmlStr);
-}
-
-function deleteRepeatComments() {
-    var bookName = $("#books").val();
-    $.ajax({
-        url:"/deleterepeat/"+bookName,
-        dataType:"json",
-        success:function(data){
-            console.log("删除重复结果："+data);
-			layer.msg("已删除，共有"+data.result+"条重复数据",{icon: 1,time:1500});
-        },
-        error : function(result) {
-            layer.msg('删除失败!',{icon:2,time:1500});
-        }
-    });
-}
 
 
 </script>
