@@ -30,15 +30,26 @@ public class EmotionalanalyzeApplicationTests {
     @Autowired
     private CommentsSevice commentsSevice;
 
+    @Test
+    public void test1(){
+
+    }
+
+    @Test
+    public void removeRepeat(){
+        commentsSevice.deleteRepeatComments("Java编程思想（第4版） [thinking in java]");
+    }
+
 	@Test
 	public void contextLoads() throws Exception{
 
-        //停用词过滤
-        List<Comments> comments = commentsSevice.Character("冰波王一梅童话故事书全20册任选 美丽+快乐童年微童话 彩图注音 3-6-9岁带拼音绘本 快乐童年微童话10册");
+        //停用词过滤,冗余词替换
+        List<Comments> comments = commentsSevice.redundantReplace(commentsSevice.Character("Java编程思想（第4版） [thinking in java]"));
+
 
         ArrayList<String> contents = new ArrayList<>();
 
-        for (int i=0;i<500;i++) {
+        for (int i=0;i<400;i++) {
             contents.add(comments.get(i).getContent());
             System.out.println(comments.get(i).getContent());
         }
@@ -52,6 +63,15 @@ public class EmotionalanalyzeApplicationTests {
         for(String key:keySet)
         {
             System.out.println(key+" : "+frequentSetMap.get(key));
+        }
+
+
+        System.out.println("=关联规则==========");
+        Map<String, Double> relationRulesMap = apriori2.getRelationRules(frequentSetMap);
+        Set<String> rrKeySet = relationRulesMap.keySet();
+        for (String rrKey : rrKeySet)
+        {
+            System.out.println(rrKey + "  :  " + relationRulesMap.get(rrKey));
         }
         Long end = System.currentTimeMillis();
         System.out.println("耗时："+(end-begin)+"毫秒");

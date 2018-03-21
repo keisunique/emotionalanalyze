@@ -33,10 +33,7 @@ import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -336,6 +333,41 @@ public class CommentsSevice {
         }
         return comments;
     }
+
+    /**
+     * 冗余词替换
+     */
+    public List<Comments> redundantReplace(String bookName){
+        //获取所有评论
+        List<Comments> comments = getCommentsByBookName(bookName);
+        return redundantReplace(comments);
+    }
+
+    /**
+     * 冗余词替换 重载1
+     */
+    public List<Comments> redundantReplace(List<Comments> comments){
+        //获取冗余词表
+        HashMap<String,String> map = ProcessUtils.redundantTable;
+        //遍历评论
+        for (Comments c:comments) {
+            //遍历冗余词表
+            Iterator iter = ProcessUtils.redundantTable.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                String key = (String)entry.getKey();
+                //冗余词替换
+                if(c.getContent().contains(key)){
+                    String value = (String)entry.getValue();
+                    String content = c.getContent().replace(key,value);
+                    c.setContent(content);
+                }
+            }
+        }
+        return comments;
+    }
+
+
 
 
 }

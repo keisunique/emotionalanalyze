@@ -13,12 +13,17 @@ public class ProcessUtils {
      */
     public static List<BookMessage> crawlQueue = new ArrayList<>();
 
+    /**
+     * 冗余词
+     */
     public static HashMap<String,String> redundantTable = new HashMap<String,String>(){
         {
             put("书籍","书");put("东西","书");put("图书","书");put("宝贝","书");
-            put("书本","书");
+            put("书本","书");put("总体","书");put("新书","书");
             put("快递","物流");
-            put("京东","服务");
+            put("京东","服务");put("店家","服务");
+            put("纸张","质量");put("纸质","质量");
+            put("书脊","外观");put("封面","外观");
         }
 
     };
