@@ -2,8 +2,12 @@ package com.ke.emotionalanalyze;
 
 import com.ke.emotionalanalyze.dao.CommentsDao;
 import com.ke.emotionalanalyze.pojo.Comments;
+import com.ke.emotionalanalyze.pojo.Feature;
 import com.ke.emotionalanalyze.service.CommentsSevice;
 import com.ke.emotionalanalyze.util.Apriori2;
+import org.ansj.domain.Term;
+import org.ansj.splitWord.analysis.ToAnalysis;
+import org.ansj.util.Counter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +16,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,19 +33,47 @@ public class EmotionalanalyzeApplicationTests {
 
     @Test
     public void test1(){
+        String s1 = "Êé±¾µÄÓ¡Ë¢ÖÊÁ¿ºÜºÃ£¬ÄÚÈİ½²½â²»´í£¬×ÜÌåºÜÂúÒâ";
+        System.out.println(ToAnalysis.parse(s1));
+        //»ñÈ¡Í£ÓÃ´Ê±íai
+        List<String> stopWordTable = new ArrayList<>();
+        try{
+            Resource resource = new ClassPathResource("static/txt/StopWordTable.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+            String line = "";
+            line = br.readLine();
+            while (line != null) {
+                stopWordTable.add(line);
+                line = br.readLine();
+            }
+            br.close();
+        }catch (IOException e){
+            e.printStackTrace();
+            System.out.println("Í£ÓÃ´Ê±í¶ÁÈ¡Ê§°Ü");
+        }
+        org.ansj.domain.Result result  = ToAnalysis.parse(s1);
+        List<Term> terms = result.getTerms();
+        for (Term term:terms) {
+            for (int j=0;j<stopWordTable.size();j++){
+                if(term.getName().equals(stopWordTable.get(j))){
+                    System.out.println(term.getName());
+                    break;
+                }
+            }
+        }
 
     }
 
     @Test
     public void removeRepeat(){
-        commentsSevice.deleteRepeatComments("Javaç¼–ç¨‹æ€æƒ³ï¼ˆç¬¬4ç‰ˆï¼‰ [thinking in java]");
+        commentsSevice.deleteRepeatComments("Ô­Ôò [Principles]");
     }
 
 	@Test
 	public void contextLoads() throws Exception{
 
-        //åœç”¨è¯è¿‡æ»¤,å†—ä½™è¯æ›¿æ¢
-        List<Comments> comments = commentsSevice.redundantReplace(commentsSevice.Character("Javaç¼–ç¨‹æ€æƒ³ï¼ˆç¬¬4ç‰ˆï¼‰ [thinking in java]"));
+        //Í£ÓÃ´Ê¹ıÂË,ÈßÓà´ÊÌæ»»
+        List<Comments> comments = commentsSevice.redundantReplace(commentsSevice.Character("Ô­Ôò [Principles]"));
 
 
         ArrayList<String> contents = new ArrayList<>();
@@ -56,17 +85,21 @@ public class EmotionalanalyzeApplicationTests {
 
         Apriori2 apriori2 = new Apriori2();
 
-        System.out.println("=é¢‘ç¹é¡¹é›†==========");
+        System.out.println("=Æµ·±Ïî¼¯==========");
         Long begin = System.currentTimeMillis();
         Map<String, Integer> frequentSetMap = apriori2.apriori(contents);
         Set<String> keySet = frequentSetMap.keySet();
+        List<Feature> features = new ArrayList<>();
         for(String key:keySet)
         {
-            System.out.println(key+" : "+frequentSetMap.get(key));
+            features.add(new Feature(key,frequentSetMap.get(key)));
+        }
+        features.sort(new Feature());
+        for (Feature f:features) {
+            System.out.println(f.getWord()+" : "+f.getCount());
         }
 
-
-        System.out.println("=å…³è”è§„åˆ™==========");
+/*        System.out.println("=¹ØÁª¹æÔò==========");
         Map<String, Double> relationRulesMap = apriori2.getRelationRules(frequentSetMap);
         Set<String> rrKeySet = relationRulesMap.keySet();
         for (String rrKey : rrKeySet)
@@ -74,7 +107,7 @@ public class EmotionalanalyzeApplicationTests {
             System.out.println(rrKey + "  :  " + relationRulesMap.get(rrKey));
         }
         Long end = System.currentTimeMillis();
-        System.out.println("è€—æ—¶ï¼š"+(end-begin)+"æ¯«ç§’");
+        System.out.println("ºÄÊ±£º"+(end-begin)+"ºÁÃë");*/
 
     }
 

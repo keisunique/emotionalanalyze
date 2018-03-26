@@ -310,7 +310,7 @@ public class CommentsSevice {
             }
             for(int k=0;k<terms.size();k++){
                 String natureStr = terms.get(k).getNatureStr();
-                if(!(natureStr.equals("n") || natureStr.equals("a"))){
+                if(!(natureStr.equals("n"))){
                     terms.remove(k);
                     k--;
                 }
