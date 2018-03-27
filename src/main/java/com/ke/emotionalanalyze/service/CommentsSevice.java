@@ -6,7 +6,9 @@ import com.ke.emotionalanalyze.dao.CommentsDao;
 import com.ke.emotionalanalyze.dao.LibraryDao;
 import com.ke.emotionalanalyze.pojo.BookMessage;
 import com.ke.emotionalanalyze.pojo.Comments;
+import com.ke.emotionalanalyze.pojo.Feature;
 import com.ke.emotionalanalyze.pojo.Result;
+import com.ke.emotionalanalyze.util.Apriori2;
 import com.ke.emotionalanalyze.util.HttpUtils;
 import com.ke.emotionalanalyze.util.ProcessUtils;
 import com.mongodb.client.result.DeleteResult;
@@ -367,6 +369,77 @@ public class CommentsSevice {
             }
         }
         return comments;
+    }
+
+    /**
+     * 特征词提取
+     */
+    public List<Feature> getFeatureWords(String bookName){
+
+        //去重，去停用词后的评论
+        List<Comments> c1 = Character(bookName);
+        //去冗余词后的评论
+        List<Comments> c2 = redundantReplace(c1);
+        System.out.println("共"+c2.size()+"条数据");
+        //特征提取
+        ArrayList<String> contents = new ArrayList<>();
+
+        for (int i=0;i<c2.size();i++) {
+            contents.add(c2.get(i).getContent());
+        }
+
+        Apriori2 apriori2 = new Apriori2();
+
+        System.out.println("=频繁项集==========");
+        Long begin = System.currentTimeMillis();
+        Map<String, Integer> frequentSetMap = apriori2.apriori(contents);
+        Set<String> keySet = frequentSetMap.keySet();
+        List<Feature> features = new ArrayList<>();
+        for(String key:keySet)
+        {
+            features.add(new Feature(key,frequentSetMap.get(key)));
+        }
+        //排序
+        features.sort(new Feature());
+        return features;
+    }
+
+    /**
+     * 情感分析
+     */
+    public List<Feature> sentimentAnalysis(List<Feature> features){
+        //读入情感字典
+        List<String> positive = new ArrayList<>();
+        List<String> negative = new ArrayList<>();
+
+        try{
+            Resource resource = new ClassPathResource("static/txt/ntusd-positive.txt");
+            BufferedReader br1 = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+            String line = "";
+            line = br1.readLine();
+            while (line != null) {
+                positive.add(line);
+                line = br1.readLine();
+            }
+            br1.close();
+
+            Resource resource2 = new ClassPathResource("static/txt/ntusd-negative.txt");
+            BufferedReader br2 = new BufferedReader(new InputStreamReader(resource.getInputStream()));
+            String line2 = "";
+            line = br2.readLine();
+            while (line != null) {
+                negative.add(line);
+                line = br2.readLine();
+            }
+            br2.close();
+
+        }catch (IOException e){
+            e.printStackTrace();
+            System.out.println("停用词表读取失败");
+        }
+
+        //遍历特征词与情感词典。
+
     }
 
 
