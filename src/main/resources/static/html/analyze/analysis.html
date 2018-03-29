@@ -1,0 +1,225 @@
+﻿<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="Bookmark" href="favicon.ico" >
+<link rel="Shortcut Icon" href="favicon.ico" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="/ui/lib/html5.js"></script>
+<script type="text/javascript" src="/ui/lib/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="/ui/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="/ui/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="/ui/lib/Hui-iconfont/1.0.8/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="/ui/static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="/ui/static/h-ui.admin/css/style.css" />
+<link rel="stylesheet" type="text/css" href="/ui/lib/layui/css/layui.css">
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<!--/meta 作为公共模版分离出去-->
+
+<title>数据分析--情感特征分析</title>
+
+</head>
+<body>
+<!--_header 作为公共模版分离出去-->
+<header class="navbar-wrapper">
+	<div class="navbar navbar-fixed-top">
+		<div class="container-fluid cl"> <a class="logo navbar-logo f-l mr-10 hidden-xs" href="/">图书评论挖掘分析系统</a> <a class="logo navbar-logo-m f-l mr-10 visible-xs" href="/">H-ui</a>
+			<span class="logo navbar-slogan f-l mr-10 hidden-xs">v1.0</span>
+			<a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
+		</div>
+	</div>
+</header>
+<!--/_header 作为公共模版分离出去-->
+
+<!--_menu 作为公共模版分离出去-->
+<aside class="Hui-aside">
+	
+	<div class="menu_dropdown bk_2">
+		<dl id="menu-process">
+			<dt><i class="Hui-iconfont">&#xe616;</i> 数据处理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd style="display: block">
+				<ul>
+					<li><a href="/crawl" >爬取数据</a></li>
+					<li><a href="/dataclean" >数据清洗</a></li>
+					<li><a href="/decomposition" >分词及词性标注</a></li>
+					<li><a href="#" >去停用词</a></li>
+					<li><a href="article-list.html" >冗余词表替换</a></li>
+				</ul>
+			</dd>
+		</dl>
+		<dl id="menu-analysis">
+			<dt><i class="Hui-iconfont">&#xe613;</i> 数据分析<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a href="picture-list.html" >情感倾向分析</a></li>
+					<li><a href="picture-list.html" >特征词分析</a></li>
+					<li><a href="picture-list.html" >统计分析</a></li>
+				</ul>
+			</dd>
+		</dl>
+		<dl id="menu-system">
+			<dt><i class="Hui-iconfont">&#xe620;</i> 系统管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd>
+				<ul>
+					<li><a href="/library" title="书库管理">书库管理</a></li>
+					<li><a href="product-category.html" title="系统信息">系统设置</a></li>
+				</ul>
+			</dd>
+		</dl>
+
+
+</div>
+</aside>
+<div class="dislpayArrow hidden-xs">
+	<a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a>
+</div>
+<!--/_menu 作为公共模版分离出去-->
+
+<section class="Hui-article-box">
+
+	<nav class="breadcrumb"><i class="Hui-iconfont"></i> <a href="/" class="maincolor">首页</a> 
+		<span class="c-999 en">&gt;</span>
+		<span class="c-666">数据处理</span>
+		<span class="c-999 en">&gt;</span>
+		<span class="c-666">去停用词</span>
+		<a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a>
+	</nav>
+
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<form class="text-c">
+				书本选择:
+				<span class="select-box radius" style="width:50%;">
+				  <select id="books" name="books" class="select" size="1" onchange="analysisData(this)">
+					   <option value="null">请选择一本书</option>
+				  </select>
+				</span>
+			</form>
+
+			<div style="height:380px;min-height:100px;margin:0 auto" id="main" ></div>
+
+		</article>
+
+		<footer class="footer">
+			<p> Copyright &copy;2018 图书评论情感挖掘分析系统 v1.0 All Rights Reserved.<br> 本后台系统由<a href="http://www.h-ui.net/" target="_blank" title="H-ui前端框架">H-ui前端框架</a>提供前端技术支持</p>
+		</footer>
+	</div>
+</section>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="/ui/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="/ui/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="/ui/static/h-ui/js/H-ui.js"></script>
+<script type="text/javascript" src="/ui/static/h-ui.admin/js/H-ui.admin.page.js"></script>
+<script type="text/javascript" src="/js/echarts.js"></script>
+<!--/_footer /作为公共模版分离出去-->
+
+<!--自添加脚本-->
+<script type="text/javascript" src="ui/lib/layui/layui.all.js"></script>
+<!--自添加脚本-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+
+	var myChart = echarts.init(document.getElementById('main'));
+
+
+    var option = {
+        title: {
+            text: 'ECharts 入门示例'
+        },
+
+        tooltip: {},
+        legend: {
+            data:['积极',"消极"]
+        },
+        xAxis: {
+            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+        },
+        yAxis: {},
+        series: [
+            {
+				name: '积极',
+                type: 'bar',
+                stack: 'one',
+                itemStyle: {
+                    normal: {color: '#5CACEE'}
+                },
+                data: [5, 20, 36, 10, 10, 20]
+        	},
+            {
+                name: '消极',
+                type: 'bar',
+                stack: 'one',
+                data: [-5, -20, -36, -10, -10, -20],
+
+            },
+        ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+
+$.ajax({
+    url:"/getbooklist",
+    type: "GET",
+    headers: {
+        Accept: "application/json"
+    },
+    success:function(data){
+        console.log(data);
+        var selectStr = "";
+        $.each(data,function (i,n) {
+			selectStr += " <option value=\""+n.bookName+"\">"+n.bookName+"</option>"
+        })
+        $("#books").append(selectStr);
+    },
+    error : function(data) {
+        console.log("error:"+data);
+    }
+})
+
+	function analysisData(obj) {
+        var bookName = obj.value;
+        if(bookName=="null"){
+            return;
+        }
+        $.ajax({
+            url:"/analysisdata/"+bookName,
+            dataType:"json",
+            success:function(data){
+				$.each(data,function (i,n) {
+					console.log(n.word+" : "+n.positive);
+                })
+            },
+            error : function(data) {
+                console.log("error:"+data);
+            }
+        });
+
+    }
+
+
+
+
+
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+
+
+<script>
+
+</script>
+
+</body>
+</html>
