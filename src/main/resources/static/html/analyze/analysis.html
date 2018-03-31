@@ -105,7 +105,7 @@
 				</span>
 			</form>
 
-			<div style="height:380px;min-height:100px;margin:0 auto" id="main" ></div>
+			<div style="height:600px;min-height:100px;margin:0 auto" id="main" ></div>
 
 		</article>
 
@@ -135,7 +135,7 @@
 
     var option = {
         title: {
-            text: 'ECharts 入门示例'
+            text: '图书情感分析图表'
         },
 
         tooltip: {},
@@ -143,7 +143,7 @@
             data:['积极',"消极"]
         },
         xAxis: {
-            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+
         },
         yAxis: {},
         series: [
@@ -154,13 +154,12 @@
                 itemStyle: {
                     normal: {color: '#5CACEE'}
                 },
-                data: [5, 20, 36, 10, 10, 20]
+
         	},
             {
                 name: '消极',
                 type: 'bar',
                 stack: 'one',
-                data: [-5, -20, -36, -10, -10, -20],
 
             },
         ]
@@ -198,8 +197,27 @@ $.ajax({
             url:"/analysisdata/"+bookName,
             dataType:"json",
             success:function(data){
+                var xdata = [];
+                var pdata = [];
+                var ndata = [];
 				$.each(data,function (i,n) {
-					console.log(n.word+" : "+n.positive);
+				    xdata.push(n.word);
+                    pdata.push(n.positive);
+                    ndata.push(0-n.negative);
+                    myChart.setOption({
+                        xAxis: {
+                            data: xdata,
+                        },
+
+                        series: [
+                            {
+                                data: pdata,
+							},
+							{
+							    data: ndata,
+							}
+                        ]
+                    });
                 })
             },
             error : function(data) {
